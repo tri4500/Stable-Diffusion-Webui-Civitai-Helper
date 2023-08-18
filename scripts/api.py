@@ -50,5 +50,25 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
            "subfolders": subfolders,
            "versions": version_strs
         }
+    
+    @app.post('/civitai/v1/download')
+    def download_by_url(url: str = Body(None,title="Target download CivitAI url"),
+                        model_type: str = Body(None,title="Model Type"),
+                        subfolder: str = Body("/",title="Sub folder"),
+                        version: str = Body(None, title="Model version"),
+                        dl_all: bool = Body(False, title="Download all files")):
+        r = model_action_civitai.get_model_info_by_url(url)
+        model_info = {}
+        if r:
+          model_info, _, _, _, _ = r
+        result = model_action_civitai.dl_model_by_input(model_info=model_info,
+                                                        model_type=model_type,
+                                                        subfolder_str=subfolder,
+                                                        version_str=version,
+                                                        dl_all_bool=dl_all,
+                                                        max_size_preview=True,
+                                                        skip_nsfw_preview=False)
+        return {"result": result}
+
 
 script_callbacks.on_app_started(civitaiAPI)
