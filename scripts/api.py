@@ -74,6 +74,17 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
     def check_update(model_types: list = Body([],title="Model Type")):
         result = model_action_civitai.check_models_new_version_to_md(model_types=model_types)
         return {"result": result}
+    
+    @app.post('/civitai/v1/update-model')
+    def check_update(model_path: str = Body(None,title="Local Model Path"),
+                     version_id: str = Body(None, title="Update to Version ID"),
+                     download_url: str = Body(None, title="Download URL")):
+        result = js_action_civitai.dl_model_new_version_api(model_path=model_path,
+                                                            version_id=version_id,
+                                                            download_url=download_url,
+                                                            max_size_preview=True,
+                                                            skip_nsfw_preview=False)
+        return {"result": result}
 
 
 script_callbacks.on_app_started(civitaiAPI)
