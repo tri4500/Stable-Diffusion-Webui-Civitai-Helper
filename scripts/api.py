@@ -70,8 +70,8 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
                                                         skip_nsfw_preview=False)
         return {"result": result}
     
-    @app.get('/civitai/v1/check-for-update')
-    def link_status(model_types: list = []):
+    @app.post('/civitai/v1/check-for-update')
+    def check_update(model_types: list = Body([],title="Model Type")):
         result = model_action_civitai.check_models_new_version_to_md(model_types=model_types)
         return {"result": result}
 
