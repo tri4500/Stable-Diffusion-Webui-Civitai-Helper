@@ -69,6 +69,11 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
                                                         max_size_preview=True,
                                                         skip_nsfw_preview=False)
         return {"result": result}
+    
+    @app.get('/civitai/v1/check-for-update')
+    def link_status(model_types: list = []):
+        result = model_action_civitai.check_models_new_version_to_md(model_types=model_types)
+        return {"result": result}
 
 
 script_callbacks.on_app_started(civitaiAPI)
