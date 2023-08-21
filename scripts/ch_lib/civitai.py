@@ -656,7 +656,7 @@ def check_models_new_version_by_model_types_api(model_types:list, delay:float=1)
                     # check this version id in list
                     is_already_in_list = False
                     for new_version in new_versions:
-                        if current_version_id == new_version[3]:
+                        if current_version_id == new_version["current_version_id"]:
                             # already in list
                             is_already_in_list = True
                             break
