@@ -60,7 +60,7 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
     
     @app.post('/civitai/v1/check-for-update')
     def check_update(model_types: list = Body([],title="Model Type")):
-        result = civitai.check_models_new_version_by_model_types(model_types, 1)
+        result = civitai.check_models_new_version_by_model_types_api(model_types, 1)
         return {"result": result}
     
     @app.post('/civitai/v1/update-model')

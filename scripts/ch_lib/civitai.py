@@ -608,5 +608,85 @@ def check_models_new_version_by_model_types(model_types:list, delay:float=1) -> 
 
     return new_versions
 
+def check_models_new_version_by_model_types_api(model_types:list, delay:float=1) -> list:
+    util.printD("Checking models' new version")
+
+    if not model_types:
+        return []
+
+    # check model types, which cloud be a string as 1 type
+    mts = []
+    if type(model_types) == str:
+        mts.append(model_types)
+    elif type(model_types) == list:
+        mts = model_types
+    else:
+        util.printD("Unknow model types:")
+        util.printD(model_types)
+        return []
+
+    # output is a markdown document string to show a list of new versions on UI
+    output = ""
+    # new version list
+    new_versions = []
+
+    # walk all models
+    for model_type, model_folder in model.folders.items():
+        if model_type not in mts:
+            continue
+
+        util.printD("Scanning path: " + model_folder)
+        for root, dirs, files in os.walk(model_folder, followlinks=True):
+            for filename in files:
+                # check ext
+                item = os.path.join(root, filename)
+                base, ext = os.path.splitext(item)
+                if ext in model.exts:
+                    # find a model
+                    r = check_model_new_version_by_path(item, delay)
+
+                    if not r:
+                        continue
+
+                    model_path, model_id, model_name, current_version_id, new_version_name, description, downloadUrl, img_url = r
+                    # check exist
+                    if not current_version_id:
+                        continue
+
+                    # check this version id in list
+                    is_already_in_list = False
+                    for new_version in new_versions:
+                        if current_version_id == new_version[3]:
+                            # already in list
+                            is_already_in_list = True
+                            break
+
+                    if is_already_in_list:
+                        util.printD("New version is already in list")
+                        continue
+
+                    # search this new version id to check if this model is already downloaded
+                    target_model_info = search_local_model_info_by_version_id(root, current_version_id)
+                    if target_model_info:
+                        util.printD("New version is already existed")
+                        continue
+
+                    # add to list
+                    new_versions.append({
+                        "model_path": model_path,
+                        "model_id": model_id,
+                        "model_name": model_name,
+                        "current_version_id": current_version_id,
+                        "new_version_name": new_version_name,
+                        "description": description,
+                        "downloadUrl": downloadUrl,
+                        "img_url": img_url
+                    })
+
+
+
+
+    return new_versions
+
 
 
