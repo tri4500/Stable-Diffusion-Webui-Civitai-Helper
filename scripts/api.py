@@ -14,18 +14,6 @@ from scripts.ch_lib import util
 
 
 def civitaiAPI(_: gr.Blocks, app: FastAPI):
-    def init():
-      root_path = os.getcwd()
-      extension_path = scripts.basedir()
-      model.get_custom_model_folder()
-      setting.load()
-      if setting.data["general"]["proxy"]:
-        util.printD("Set Proxy: "+setting.data["general"]["proxy"])
-        util.proxies = {
-            "http": setting.data["general"]["proxy"],
-            "https": setting.data["general"]["proxy"],
-        }
-
     @app.post('/civitai/v1/scan-model')
     def link_status(scan_model_types: list = Body(["ti", "hyper", "ckp", "lora"],title="List of model types"),
               max_size_preview: bool= Body(True,title="Download Max Size Preview"),
@@ -72,7 +60,7 @@ def civitaiAPI(_: gr.Blocks, app: FastAPI):
     
     @app.post('/civitai/v1/check-for-update')
     def check_update(model_types: list = Body([],title="Model Type")):
-        result = model_action_civitai.check_models_new_version_to_md(model_types=model_types)
+        result = civitai.check_models_new_version_by_model_types(model_types, 1)
         return {"result": result}
     
     @app.post('/civitai/v1/update-model')
