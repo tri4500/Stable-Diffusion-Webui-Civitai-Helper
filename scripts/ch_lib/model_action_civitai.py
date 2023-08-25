@@ -425,9 +425,10 @@ def dl_model_by_input(model_info:dict, model_type:str, subfolder_str:str, versio
     # get model folder for downloading
     model_folder = os.path.join(model_root_folder, subfolder)
     if not os.path.isdir(model_folder):
-        output = "Model folder is not a dir: "+ model_folder
-        util.printD(output)
-        return output
+        os.mkdir(model_folder)
+        # output = "Model folder is not a dir: "+ model_folder
+        # util.printD(output)
+        # return output
     
     # get version info
     ver_info = get_ver_info_by_ver_str(version_str, model_info)
